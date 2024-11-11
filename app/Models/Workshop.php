@@ -14,7 +14,7 @@ class Workshop extends Model
     use HasFactory, SoftDeletes;  
 
     protected $fillable = [  
-        'nama',  
+        'name',  
         'slug',  
         'thumbnail',  
         'venue_thumbnail',  

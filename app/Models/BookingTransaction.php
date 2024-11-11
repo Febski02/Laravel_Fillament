@@ -27,7 +27,7 @@ class BookingTransaction extends Model
         'wokshop_id',
     ];
 
-    public static function geneateUniqueTrxId()
+    public static function generateUniqueTrxId()
     {
         $prefix = 'AKT';
         do {
@@ -41,7 +41,8 @@ class BookingTransaction extends Model
     {
         return $this->hasMany(WorkshopParticipant::class);
     }
-    public function wokshop(): BelongsTo
+
+    public function workshop(): BelongsTo
     {
         return $this->belongsTo(Workshop::class);
     }

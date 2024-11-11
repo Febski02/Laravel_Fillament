@@ -30,9 +30,10 @@ class CategoryResource extends Resource
                     ->required()
                     ->maxLength(255),
 
-                Forms\Components\TextInput::make('icon')
-                    ->required()
-                    ->maxLength(255),
+                Forms\Components\FileUpload::make('icon')
+                ->image()
+                ->required()
+                ->disk('public')
                 
             ]);
     }
@@ -45,7 +46,6 @@ class CategoryResource extends Resource
                 ->searchable(),
 
                 Tables\Columns\ImageColumn::make('icon'),
-                
             ])
             ->filters([
                 //
@@ -53,6 +53,8 @@ class CategoryResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
+                
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

@@ -2,16 +2,18 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\WorkshopParticipantResource\Pages;
-use App\Filament\Resources\WorkshopParticipantResource\RelationManagers;
-use App\Models\WorkshopParticipant;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use App\Models\Workshop;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Filament\Resources\Resource;
+use App\Models\WorkshopParticipant;
+use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\WorkshopParticipantResource\Pages;
+use App\Filament\Resources\WorkshopParticipantResource\RelationManagers;
 
 class WorkshopParticipantResource extends Resource
 {
@@ -24,20 +26,62 @@ class WorkshopParticipantResource extends Resource
         return $form
             ->schema([
                 //
-            ]);
-    }
+                Forms\Components\TextInput::make('name')
+                ->required()
+                ->maxLength(255),
 
+            Forms\Components\TextInput::make('occupation')
+                ->required()
+                ->maxLength(255),
+
+            Forms\Components\TextInput::make('email')
+                ->required()
+                ->maxLength(255),
+
+            Forms\Components\Select::make('workshop_id')
+                ->relationship('workshop', 'name')
+                ->searchable()
+                ->preload()
+                ->required(),
+
+            Forms\Components\Select::make('booking_transaction_id')
+                ->relationship('bookingTransaction', 'booking_trx_id')
+                ->searchable()
+                ->preload()
+                ->required(),
+        ]);
+}
+
+    
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
                 //
+                Tables\Columns\ImageColumn::make('workshop.thumbnail'),
+
+                Tables\Columns\TextColumn::make('bookingTransaction.booking_trx_id')
+                    ->searchable(),
+
+                Tables\Columns\TextColumn::make('name')
+                    ->searchable(),
+
+                Tables\Columns\TextColumn::make('email')
+                    ->searchable(),
             ])
+            
             ->filters([
                 //
-            ])
+                SelectFilter::make('workshop_id')
+                ->label('workshop')
+                ->relationship('workshop', 'name'),
+        ])
+                
+            
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
